@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <FS.h>
 #include <LittleFS.h>
+#include <ESP8266WiFi.h>
 #include "notificationStore.h"
+#include "passwords.h"
 
 const int LED_PIN = LED_BUILTIN; // built-in LED might be defined for your board
 
@@ -28,20 +30,36 @@ void test()
   debugPrintAll("After save/load:");
 }
 
+void connectToWiFi() {
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    digitalWrite(LED_PIN, HIGH);
+    delay(300);
+    digitalWrite(LED_PIN, LOW);
+    delay(300);
+  }
+
+  Serial.print("Connected, IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
 void setup() {
   Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, HIGH);
-  Serial.println("LED ON");
 
   if(!LittleFS.begin()){
     Serial.println("LittleFS Mount Failed");
     return;
   }
 
-  // load();
+  load();
 
-  test();
+  connectToWiFi();
+
+  //test();
 }
 
 void loop() {
