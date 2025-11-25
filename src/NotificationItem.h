@@ -30,6 +30,12 @@ struct NotificationItem {
           timeOfDayMinutes(std::chrono::hours(hours) + std::chrono::minutes(minutes))
     {}
 
+    NotificationItem(int day, int tod, int id)
+        : dayOfWeek(static_cast<DayOfWeek>((day >= 0 && day <= 6) ? day : 0)),
+          timeOfDayMinutes(tod),
+          id(id)
+    {}
+
     // Accessors
     int hours() const   { return static_cast<int>(timeOfDayMinutes.count() / 60); }
     int minutes() const { return static_cast<int>(timeOfDayMinutes.count() % 60); }
