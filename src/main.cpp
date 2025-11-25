@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include "notificationStore.h"
 #include "passwords.h"
+#include "webserverCalendar.h"
 
 const int LED_PIN = LED_BUILTIN; // built-in LED might be defined for your board
 
@@ -106,6 +107,8 @@ void setup() {
   connectToWiFi();
 
   syncRtc();
+
+  initWebServer();
 
   //test();
 }

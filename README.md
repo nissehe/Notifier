@@ -9,7 +9,6 @@ const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
 
 ## TODO
-- time
 - manage daylight saving time
 - web
 - sleep
