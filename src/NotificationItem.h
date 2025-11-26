@@ -1,21 +1,12 @@
 #pragma once
 
 #include <chrono>
-#include <cstdint>
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include "timeServer.h"
 
 struct NotificationItem {
-    enum class DayOfWeek : uint8_t {
-        Monday = 0,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
-    };
 
     DayOfWeek dayOfWeek{DayOfWeek::Monday};
 

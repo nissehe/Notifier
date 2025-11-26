@@ -91,3 +91,24 @@ void syncRtc()
   Serial.print("Time synchronized Local: ");
   Serial.println(buf);
 }
+
+DayOfWeek getCurrentDayOfWeek()
+{
+    time_t now = time(nullptr);
+    struct tm timeinfo;
+    localtime_r(&now, &timeinfo);
+    int wday = timeinfo.tm_wday; // tm_wday: 0=Sunday, 1=Monday, ..., 6=Saturday
+    if (wday == 0) {
+        return DayOfWeek::Sunday;
+    } else {
+        return static_cast<DayOfWeek>(wday - 1);
+    }
+}
+
+int getCurrentTimeOfDayMinutes()
+{
+    time_t now = time(nullptr);
+    struct tm timeinfo;
+    localtime_r(&now, &timeinfo);
+    return timeinfo.tm_hour * 60 + timeinfo.tm_min;
+}

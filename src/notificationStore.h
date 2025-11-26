@@ -4,9 +4,9 @@
 #include "NotificationItem.h"
 
 void loadNotifications();
-void save();
-void add(NotificationItem item);
-void remove(int index);
-const std::vector<NotificationItem>& getAll() noexcept;
-void wipeAll();
-void debugPrintAll(const char* header);
+void saveNotifications();
+int addNotification(NotificationItem item);
+void removeNotification(int id);
+const std::vector<NotificationItem>& getAllNotifications() noexcept;
+void removeAllNotifications();
+void debugPrintAllNotifications(const char* header);

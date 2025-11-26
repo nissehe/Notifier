@@ -20,6 +20,17 @@ static int nextId()
     return id;
 }
 
+static void sort()
+{
+    std::sort(g_notifications.begin(), g_notifications.end(),
+        [](const NotificationItem &a, const NotificationItem &b) {
+            if (a.dayOfWeek != b.dayOfWeek) {
+                return a.dayOfWeek < b.dayOfWeek;
+            }
+            return a.timeOfDayMinutes < b.timeOfDayMinutes;
+        });
+}
+
 void loadNotifications()
 {
     File file = LittleFS.open(path, "r");
@@ -44,7 +55,7 @@ void loadNotifications()
         return;
     }
     
-    wipeAll();
+    removeAllNotifications();
 
     for (JsonObject obj : doc["data"].as<JsonArray>()) {
         NotificationItem item(obj["dayOfWeek"] | 0, obj["timeOfDayMinutes"] | 0, obj["id"] | 0);
@@ -52,9 +63,11 @@ void loadNotifications()
     }
 
     file.close();
+
+    sort();
 }
 
-void save()
+void saveNotifications()
 {
     File file = LittleFS.open(path, "w");
     if (!file) {
@@ -84,13 +97,17 @@ void save()
     file.close();
 }
 
-void add(NotificationItem item)
+int addNotification(NotificationItem item)
 {
     item.id = nextId();
     g_notifications.push_back(std::move(item));
+
+    sort();
+
+    return item.id;
 }
 
-void remove(int id)
+void removeNotification(int id)
 {
     for (auto it = g_notifications.begin(); it != g_notifications.end(); ++it) {
         if (it->id == id) {
@@ -98,22 +115,24 @@ void remove(int id)
             break;
         }
     }
+
+    sort();
 }
 
-const std::vector<NotificationItem> &getAll() noexcept
+const std::vector<NotificationItem> &getAllNotifications() noexcept
 {
     return g_notifications;
 }
 
-void wipeAll()
+void removeAllNotifications()
 {
     g_notifications.clear();
 }
 
-void debugPrintAll(const char* header)
+void debugPrintAllNotifications(const char* header)
 {
     Serial.println(header);
-    const auto& notifications = getAll();
+    const auto& notifications = getAllNotifications();
     for (const auto& n : notifications) {
         Serial.print("Notification ID: ");
         Serial.print(n.id);
