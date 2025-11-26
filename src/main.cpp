@@ -10,7 +10,7 @@
 
 void test()
 {
-  load();
+  loadNotifications();
   debugPrintAll("Initial notifications:");
 
   NotificationItem item1(NotificationItem::DayOfWeek::Monday, 8, 30);
@@ -26,7 +26,7 @@ void test()
   debugPrintAll("After adding another notification:");
 
   save();
-  load();
+  loadNotifications();
 
   debugPrintAll("After save/load:");
 }
@@ -51,6 +51,9 @@ void connectToWiFi()
 
 void setup() {
   Serial.begin(115200);
+  while(!Serial) { }
+  Serial.println();
+
   pinMode(LED_PIN, OUTPUT);
 
   if(!LittleFS.begin()){
@@ -58,7 +61,7 @@ void setup() {
     return;
   }
 
-  load();
+  loadNotifications();
 
   connectToWiFi();
 

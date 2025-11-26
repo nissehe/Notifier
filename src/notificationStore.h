@@ -3,7 +3,7 @@
 #include <vector>
 #include "NotificationItem.h"
 
-void load();
+void loadNotifications();
 void save();
 void add(NotificationItem item);
 void remove(int index);

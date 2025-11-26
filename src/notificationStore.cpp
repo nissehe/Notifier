@@ -20,7 +20,7 @@ static int nextId()
     return id;
 }
 
-void load()
+void loadNotifications()
 {
     File file = LittleFS.open(path, "r");
 

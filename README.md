@@ -12,7 +12,7 @@ const char* WIFI_PASSWORD = "";
 const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
-- manage daylight saving time
 - web
+- find next notification
 - sleep
 - wake from sleep by input
