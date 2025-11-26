@@ -8,8 +8,8 @@
 #include "timeServer.h"
 #include "scheduler.h"
 
-const int BELL_PIN = 4;     // D2
-const int WEB_MODE_PIN = 5; // D1
+const int BELL_PIN = 4;
+const int WEB_MODE_PIN = 5;
 
 const char* webModeFlagFile = "/webmode.flag";
 
