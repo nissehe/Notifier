@@ -111,6 +111,8 @@ void setup() {
     return;
   }
 
+  delay(100); // Avoid any bounce from the web button
+
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BELL_PIN, OUTPUT);
   pinMode(WEB_MODE_PIN, INPUT_PULLUP);
