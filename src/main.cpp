@@ -17,19 +17,23 @@ bool isWebMode;
 
 void test()
 {
-  loadNotifications();
-  debugPrintAllNotifications("Initial notifications:");
+  // loadNotifications();
+  // debugPrintAllNotifications("Initial notifications:");
+  removeAllNotifications();
+  saveNotifications();
 
-  NotificationItem item1(DayOfWeek::Monday, 8, 30);
-  NotificationItem item2(DayOfWeek::Wednesday, 14, 00);
+  NotificationItem item1(DayOfWeek::Wednesday, 8, 30);
+  NotificationItem item2(DayOfWeek::Monday, 14, 00);
+  NotificationItem item3(DayOfWeek::Monday, 13, 50);
   addNotification(item1);
-  addNotification(item2);
-  debugPrintAllNotifications("Added two items:");
+  int id2 = addNotification(item2);
+  addNotification(item3);
+  debugPrintAllNotifications("Added three items:");
 
-  removeNotification(0); // Remove the first notification
+  removeNotification(id2);
   debugPrintAllNotifications("Removed first item:");
 
-  addNotification(NotificationItem(DayOfWeek::Friday, 9, 15));
+  addNotification(NotificationItem(DayOfWeek::Tuesday, 9, 15));
   debugPrintAllNotifications("After adding another notification:");
 
   saveNotifications();
