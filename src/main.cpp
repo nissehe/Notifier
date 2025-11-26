@@ -58,7 +58,7 @@ void checkWebModeFlag()
   }
 }
 
-void ICACHE_RAM_ATTR ISR() {
+void IRAM_ATTR ISR() {
     setWebModeFlag();
     Serial.println("Web mode flag set, restarting...");
 
