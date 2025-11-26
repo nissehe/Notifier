@@ -5,8 +5,13 @@
 #include "notificationStore.h"
 #include "passwords.h"
 #include "webserverCalendar.h"
-#include "globals.h"
 #include "timeServer.h"
+#include "scheduler.h"
+
+const int BELL_PIN = 4;     // D2
+const int WEB_MODE_PIN = 5; // D1
+
+bool isWebMode;
 
 void test()
 {
@@ -31,7 +36,7 @@ void test()
   debugPrintAll("After save/load:");
 }
 
-void connectToWiFi() 
+void connectWiFi() 
 {
   Serial.print("Connect to Wifi");
 
@@ -39,9 +44,9 @@ void connectToWiFi()
 
   while (WiFi.status() != WL_CONNECTED)
   {
-    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(300);
-    digitalWrite(LED_PIN, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     delay(300);
   }
 
@@ -49,12 +54,31 @@ void connectToWiFi()
   Serial.println(WiFi.localIP());
 }
 
+void disconnectWifi()
+{
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_OFF);
+  Serial.println("WiFi disconnected");
+}
+
+void ringTheBell()
+{
+  digitalWrite(BELL_PIN, HIGH);
+  delay(500);
+  digitalWrite(BELL_PIN, LOW);
+}
+
 void setup() {
   Serial.begin(115200);
   while(!Serial) { }
   Serial.println();
 
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BELL_PIN, OUTPUT);
+  pinMode(WEB_MODE_PIN, INPUT);
+
+  isWebMode = digitalRead(WEB_MODE_PIN) == HIGH;
+  Serial.printf("Web mode: %s\n", isWebMode ? "ENABLED" : "DISABLED");
 
   if(!LittleFS.begin()){
     Serial.println("LittleFS Mount Failed");
@@ -63,14 +87,25 @@ void setup() {
 
   loadNotifications();
 
-  connectToWiFi();
+  connectWiFi();
 
   syncRtc();
 
-  initWebServer();
+  if(isWebMode)
+  {
+    initWebServer();
+  }
+  else
+  {
+    disconnectWifi();
+  }
 
   //test();
 }
 
 void loop() {
+  if(!isWebMode){
+    waitForNextNotification();
+    ringTheBell();
+  }
 }

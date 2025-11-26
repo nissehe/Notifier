@@ -3,7 +3,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
-#include "globals.h"
 #include "passwords.h"
 
 String dstUrl = "http://api.timezonedb.com/v2.1/get-time-zone?key=" +
@@ -67,9 +66,9 @@ void syncRtc()
   int attempts = 0;
   const int maxAttempts = 30; // ~15 seconds (30 * 500ms)
   while (now < 24 * 3600 && attempts++ < maxAttempts) {
-    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(600);
-    digitalWrite(LED_PIN, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     delay(600);
     now = time(nullptr);
   }
