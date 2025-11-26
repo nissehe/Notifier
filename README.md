@@ -14,5 +14,7 @@ const char* TIMEZONEDB_API_KEY = "";
 ## TODO
 - web
 - find next notification
+- trigger web mode (capacitor + resistor pulldown)
+- control the bell (replay?)
 - sleep
 - wake from sleep by input
