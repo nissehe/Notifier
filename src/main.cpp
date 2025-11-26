@@ -15,6 +15,18 @@ const char* webModeFlagFile = "/webmode.flag";
 
 bool isWebMode;
 
+void generateTestData()
+{
+  removeAllNotifications();
+
+  NotificationItem item1(DayOfWeek::Wednesday, 8, 30);
+  NotificationItem item2(DayOfWeek::Monday, 14, 00);
+  NotificationItem item3(DayOfWeek::Monday, 13, 50);
+  addNotification(item1);
+  addNotification(item2);
+  addNotification(item3);
+}
+
 void test()
 {
   // loadNotifications();
@@ -126,8 +138,10 @@ void setup() {
 
   checkWebModeFlag();
 
+  isWebMode = true;
   if(isWebMode)
   {
+    generateTestData();
     initWebServer();
   }
   else
