@@ -5,8 +5,8 @@
 #include "notificationStore.h"
 #include "passwords.h"
 #include "webserverCalendar.h"
-
-const int LED_PIN = LED_BUILTIN; // built-in LED might be defined for your board
+#include "globals.h"
+#include "timeServer.h"
 
 void test()
 {
@@ -31,7 +31,9 @@ void test()
   debugPrintAll("After save/load:");
 }
 
-void connectToWiFi() {
+void connectToWiFi() 
+{
+  Serial.print("Connect to Wifi");
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
@@ -45,52 +47,6 @@ void connectToWiFi() {
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
-}
-
-void syncRtc() 
-{
-  // Implement RTC synchronization if needed
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi not connected, skipping RTC sync");
-    return;
-  }
-
-  // Configure NTP - adjust gmtOffset_sec and daylightOffset_sec to your timezone
-  const char* ntpServer = "pool.ntp.org";
-  const long gmtOffset_sec = 3600; // e.g. 3600 for CET (UTC+1)
-  const int daylightOffset_sec = 0;   // e.g. 3600 when DST applies
-
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-
-  Serial.print("Syncing time with NTP");
-  time_t now = time(nullptr);
-  int attempts = 0;
-  const int maxAttempts = 30; // ~15 seconds (30 * 500ms)
-  while (now < 24 * 3600 && attempts++ < maxAttempts) {
-    digitalWrite(LED_PIN, HIGH);
-    delay(600);
-    digitalWrite(LED_PIN, LOW);
-    delay(600);
-    now = time(nullptr);
-  }
-  Serial.println();
-
-  if (now < 24 * 3600) {
-    Serial.println("Failed to synchronize time");
-    return;
-  }
-
-  struct tm timeinfo;
-  gmtime_r(&now, &timeinfo);
-  char buf[64];
-  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
-  Serial.print("Time synchronized UTC:   ");
-  Serial.println(buf);
-
-  localtime_r(&now, &timeinfo);
-  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
-  Serial.print("Time synchronized Local: ");
-  Serial.println(buf);
 }
 
 void setup() {
