@@ -11,6 +11,8 @@
 const int BELL_PIN = 4;     // D2
 const int WEB_MODE_PIN = 5; // D1
 
+const char* webModeFlagFile = "/webmode.flag";
+
 bool isWebMode;
 
 void test()
@@ -34,6 +36,33 @@ void test()
   loadNotifications();
 
   debugPrintAll("After save/load:");
+}
+
+void setWebModeFlag()
+{
+  File file = LittleFS.open(webModeFlagFile, "w");
+  if (file) {
+      file.write('1');
+      file.close();
+  }
+}
+
+void checkWebModeFlag()
+{
+  File file = LittleFS.open(webModeFlagFile, "r");
+  if (file) {
+    isWebMode = true;
+    file.close();
+    LittleFS.remove(webModeFlagFile);
+    Serial.println("Web mode flag detected, starting in web mode.");
+  }
+}
+
+void ICACHE_RAM_ATTR ISR() {
+    setWebModeFlag();
+    Serial.println("Web mode flag set, restarting...");
+
+    ESP.restart();
 }
 
 void connectWiFi() 
@@ -73,23 +102,23 @@ void setup() {
   while(!Serial) { }
   Serial.println();
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(BELL_PIN, OUTPUT);
-  pinMode(WEB_MODE_PIN, INPUT);
-
-  isWebMode = digitalRead(WEB_MODE_PIN) == HIGH;
-  Serial.printf("Web mode: %s\n", isWebMode ? "ENABLED" : "DISABLED");
-
   if(!LittleFS.begin()){
     Serial.println("LittleFS Mount Failed");
     return;
   }
 
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BELL_PIN, OUTPUT);
+  pinMode(WEB_MODE_PIN, INPUT_PULLUP);
+  attachInterrupt(WEB_MODE_PIN, ISR, FALLING);
+
   loadNotifications();
-
+  
   connectWiFi();
-
+  
   syncRtc();
+
+  checkWebModeFlag();
 
   if(isWebMode)
   {
