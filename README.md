@@ -13,8 +13,7 @@ const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
 - web
-- find next notification
-- control the bell (replay?)
+- control the bell (relay?)
 
 - sleep
 - wake from sleep by input
