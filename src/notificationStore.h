@@ -5,7 +5,6 @@
 #include "NotificationItem.h"
 
 void loadNotifications();
-void saveNotifications();
 int addNotification(NotificationItem item);
 void updateNotification(NotificationItem item);
 void removeNotification(int id);

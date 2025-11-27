@@ -101,6 +101,7 @@ int addNotification(NotificationItem item)
     g_notifications.push_back(std::move(item));
 
     sort();
+    saveNotifications();
 
     return item.id;
 }
@@ -115,6 +116,7 @@ void updateNotification(NotificationItem newValue)
     }
 
     sort();
+    saveNotifications();
 }
 
 void removeNotification(int id)
@@ -127,6 +129,7 @@ void removeNotification(int id)
     }
 
     sort();
+    saveNotifications();
 }
 
 const std::vector<NotificationItem> &getAllNotifications() noexcept
@@ -137,6 +140,7 @@ const std::vector<NotificationItem> &getAllNotifications() noexcept
 void removeAllNotifications()
 {
     g_notifications.clear();
+    saveNotifications();
 }
 
 void debugPrintAllNotifications(const char* header)

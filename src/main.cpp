@@ -103,7 +103,6 @@ void setup() {
   isWebMode = true;
   if(isWebMode)
   {
-    generateTestData();
     initWebServer();
   }
   else
@@ -111,7 +110,7 @@ void setup() {
     disconnectWifi();
   }
 
-  test();
+  // test();
 }
 
 void loop() {

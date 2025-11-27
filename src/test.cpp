@@ -16,10 +16,8 @@ void generateTestData()
 
 void test()
 {
-  // loadNotifications();
   // debugPrintAllNotifications("Initial notifications:");
   removeAllNotifications();
-  saveNotifications();
 
   NotificationItem item1(DayOfWeek::Wednesday, 8, 30);
   NotificationItem item2(DayOfWeek::Monday, 14, 00);
@@ -34,9 +32,4 @@ void test()
 
   addNotification(NotificationItem(DayOfWeek::Tuesday, 9, 15));
   debugPrintAllNotifications("After adding another notification:");
-
-  saveNotifications();
-  loadNotifications();
-
-  debugPrintAllNotifications("After save/load:");
 }

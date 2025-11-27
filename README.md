@@ -14,4 +14,3 @@ const char* TIMEZONEDB_API_KEY = "";
 ## TODO
 - control the bell (relay?)
 - static IP
-- save changes
