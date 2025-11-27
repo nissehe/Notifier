@@ -203,7 +203,7 @@ void initWebServer() {
           </select>
 
           <label>Time:</label>
-          <input type="time" id="timeInput" required>
+          <input type="time" id="timeInput" style="width:94%" required>
 
           <div class="modal-buttons">
             <button onclick="closeModal()" class="modal-btn modal-btn-cancel">Cancel</button>
