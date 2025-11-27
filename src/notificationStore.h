@@ -8,6 +8,6 @@ void loadNotifications();
 int addNotification(NotificationItem item);
 void updateNotification(NotificationItem item);
 void removeNotification(int id);
-const std::vector<NotificationItem>& getAllNotifications() noexcept;
 void removeAllNotifications();
+const std::vector<NotificationItem>& getAllNotifications() noexcept;
 void debugPrintAllNotifications(const char* header);

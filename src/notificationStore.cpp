@@ -55,8 +55,6 @@ void loadNotifications()
         return;
     }
     
-    removeAllNotifications();
-
     for (JsonObject obj : doc["data"].as<JsonArray>()) {
         NotificationItem item(obj);
         g_notifications.push_back(std::move(item));
