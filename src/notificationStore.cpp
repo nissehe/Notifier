@@ -107,6 +107,18 @@ int addNotification(NotificationItem item)
     return item.id;
 }
 
+void updateNotification(NotificationItem newValue)
+{
+    for (auto &n : g_notifications) {
+        if (n.id == newValue.id) {
+            n = std::move(newValue);
+            break;
+        }
+    }
+
+    sort();
+}
+
 void removeNotification(int id)
 {
     for (auto it = g_notifications.begin(); it != g_notifications.end(); ++it) {
