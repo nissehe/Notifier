@@ -10,42 +10,9 @@
 #include "test.h"
 
 const int BELL_PIN = 4;
-const int WEB_MODE_PIN = 5;
-
-const char* webModeFlagFile = "/webmode.flag";
-
-bool isWebMode;
-
-void setWebModeFlag()
-{
-  File file = LittleFS.open(webModeFlagFile, "w");
-  if (file) {
-      file.write('1');
-      file.close();
-  }
-}
-
-void checkWebModeFlag()
-{
-  File file = LittleFS.open(webModeFlagFile, "r");
-  if (file) {
-    isWebMode = true;
-    file.close();
-    LittleFS.remove(webModeFlagFile);
-    Serial.println("Web mode flag detected, starting in web mode.");
-  }
-}
-
-void IRAM_ATTR ISR() {
-    setWebModeFlag();
-    Serial.println("Web mode flag set, restarting...");
-
-    ESP.restart();
-}
 
 void connectWiFi() 
 {
-  
   IPAddress local_IP(192, 168, 0, 202);
   IPAddress gateway(192, 168, 0, 1);
   IPAddress subnet(255, 255, 255, 0);
@@ -74,13 +41,6 @@ void connectWiFi()
   Serial.println(WiFi.localIP());
 }
 
-void disconnectWifi()
-{
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_OFF);
-  Serial.println("WiFi disconnected");
-}
-
 void ringTheBell()
 {
   digitalWrite(BELL_PIN, HIGH);
@@ -98,37 +58,16 @@ void setup() {
     return;
   }
 
-  delay(100); // Avoid any bounce from the web button
-
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BELL_PIN, OUTPUT);
-  pinMode(WEB_MODE_PIN, INPUT_PULLUP);
-  attachInterrupt(WEB_MODE_PIN, ISR, FALLING);
 
   loadNotifications();
-  
   connectWiFi();
-  
   syncRtc();
-
-  checkWebModeFlag();
-
-  isWebMode = true;
-  if(isWebMode)
-  {
-    initWebServer();
-  }
-  else
-  {
-    disconnectWifi();
-  }
-
-  // test();
+  initWebServer();
 }
 
 void loop() {
-  if(!isWebMode){
-    waitForNextNotification();
-    ringTheBell();
-  }
+  waitForNextNotification();
+  ringTheBell();
 }

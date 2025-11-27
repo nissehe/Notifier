@@ -13,4 +13,4 @@ const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
 - control the bell (relay?)
-- static IP
+- update schedular when calendar changes 
