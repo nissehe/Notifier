@@ -41,7 +41,7 @@ void initWebServer() {
 
       NotificationItem item(weekday, hour, minute);
       item.id = index;
-      
+
       updateNotification(item);
     }
 
@@ -197,12 +197,22 @@ void initWebServer() {
     auto notifications = getAllNotifications();
 
     for (size_t i = 0; i < notifications.size(); i++) {
+        const auto &n = notifications[i];
+
+        char timebuf[8];
+        snprintf(timebuf, sizeof(timebuf), "%02u:%02u", (unsigned)n.hours(), (unsigned)n.minutes());
+
+        String weekDayStr = getStringFromDayOfWeek(n.dayOfWeek);
+
         html += "<div class='item'>";
-        html +=   "<div class='time'>";
-        html +=      String(notifications[i].toString().c_str());
-        html +=   "</div>";
+        html +=   "<div class='time'>" + weekDayStr + " " + timebuf + "</div>";
         html +=   "<div>";
-        html +=     "<button class='edit-btn' onclick='openEditModal(" + String(notifications[i].id) + ", `" + notifications[i].toString().c_str() + "`)'>Edit</button>";
+        html +=     "<button class='edit-btn' onclick=\"openEditModal("
+                          +    String(n.id) + ", '"
+                          +    weekDayStr + "', "
+                          +    String(n.hours()) + ", "
+                          +    String(n.minutes())
+                          +  ")\">Edit</button>";
         html +=     "<button class='remove-btn' onclick='removeItem(" + String(notifications[i].id) + ")'>Remove</button>";
         html += "</div></div>";
     }
@@ -230,15 +240,17 @@ void initWebServer() {
             document.getElementById("editModal").style.display = "flex";
         }
 
-        function openEditModal(id, existingValue) {
+        function openEditModal(id, weekday, hour, minute) {
             editId = id;
 
             document.getElementById("modalTitle").textContent = "Edit Notification";
 
-            // existingValue format: "Monday 13:50"
-            const parts = existingValue.split(" ");
-            document.getElementById("weekday").value = parts[0];
-            document.getElementById("timeInput").value = parts[1];
+            document.getElementById("weekday").value = weekday;
+
+            // Format hour/minute as HH:MM
+            const hh = String(hour).padStart(2, '0');
+            const mm = String(minute).padStart(2, '0');
+            document.getElementById("timeInput").value = hh + ":" + mm;
 
             document.getElementById("modalSaveBtn").onclick = saveEdit;
             document.getElementById("editModal").style.display = "flex";

@@ -58,7 +58,7 @@ void loadNotifications()
     removeAllNotifications();
 
     for (JsonObject obj : doc["data"].as<JsonArray>()) {
-        NotificationItem item(obj["dayOfWeek"] | 0, obj["timeOfDayMinutes"] | 0, obj["id"] | 0);
+        NotificationItem item(obj);
         g_notifications.push_back(std::move(item));
     }
 
@@ -80,9 +80,7 @@ void saveNotifications()
 
     for (const auto &n : g_notifications) {
         JsonObject obj = data.add<JsonObject>();
-        obj["id"] = n.id;
-        obj["dayOfWeek"] = (int)n.dayOfWeek;
-        obj["timeOfDayMinutes"] = n.timeOfDayMinutes.count();
+        n.addAsJson(obj);
     }
 
     doc.shrinkToFit();
