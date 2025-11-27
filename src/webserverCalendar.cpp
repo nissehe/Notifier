@@ -78,7 +78,14 @@ void initWebServer() {
               margin: 0;
               padding: 20px;
           }
+          .page-container {
+              max-width: 600px;     /* or 50%, 60%, 70% — adjust to taste */
+              width: 80%;           /* % of screen width */
+              margin: 0 auto;       /* center horizontally */
+              padding: 20px 0;
+          }
           h1 {
+              text-align: center;
               margin-bottom: 20px;
           }
           .item {
@@ -159,10 +166,26 @@ void initWebServer() {
         .modal-buttons {
             display: flex;
             justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
         }
-        .modal-buttons button {
-            margin-left: 10px;
+        .modal-btn {
+            padding: 10px 16px;
+            font-size: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .modal-btn-save {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .modal-btn-cancel {
+            background-color: #e5c835ff;
+            color: white;
+        }
+
       </style></head>
       <div id="editModal" class="modal">
         <div class="modal-content">
@@ -183,15 +206,16 @@ void initWebServer() {
           <input type="time" id="timeInput" required>
 
           <div class="modal-buttons">
-            <button onclick="closeModal()">Cancel</button>
-            <button id="modalSaveBtn">Save</button>
+            <button onclick="closeModal()" class="modal-btn modal-btn-cancel">Cancel</button>
+            <button id="modalSaveBtn" class="modal-btn modal-btn-save">Save</button>
           </div>
         </div>
       </div>
       <body>
-      <h1>Scheduled Notifications</h1>
-      <div class='add-box' onclick='openAddModal()'>+ Add New Notification</div>
-      <div id="list">
+      <div class="page-container">
+        <h1>Scheduled Notifications</h1>
+        <div class='add-box' onclick='openAddModal()'>+ Add New Notification</div>
+        <div id="list">
       )rawliteral";
 
     auto notifications = getAllNotifications();
@@ -218,6 +242,7 @@ void initWebServer() {
     }
 
     html += R"rawliteral(
+      </div>
       </div>
       <script>
 

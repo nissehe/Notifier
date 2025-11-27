@@ -12,8 +12,4 @@ const char* WIFI_PASSWORD = "";
 const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
-- web
 - control the bell (relay?)
-
-- sleep
-- wake from sleep by input
