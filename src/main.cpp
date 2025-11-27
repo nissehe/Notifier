@@ -45,7 +45,20 @@ void IRAM_ATTR ISR() {
 
 void connectWiFi() 
 {
-  Serial.print("Connect to Wifi");
+  
+  IPAddress local_IP(192, 168, 0, 202);
+  IPAddress gateway(192, 168, 0, 1);
+  IPAddress subnet(255, 255, 255, 0);
+  IPAddress dns1(192, 168, 0, 1);
+  
+  Serial.print("Connect to Wifi using static IP: ");
+  Serial.println(local_IP);
+
+  WiFi.mode(WIFI_STA);
+
+  if (!WiFi.config(local_IP, gateway, subnet, dns1)) {
+    Serial.println("Failed to configure static IP");
+  }
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
