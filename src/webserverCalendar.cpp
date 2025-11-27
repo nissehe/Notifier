@@ -200,12 +200,6 @@ void initWebServer() {
     html += R"rawliteral(
       </div>
       <script>
-        function editItem(index) {
-            const newValue = prompt("Enter new time (e.g. Monday 14:00):");
-            if (newValue) {
-                window.location = "/edit?i=" + index + "&value=" + encodeURIComponent(newValue);
-            }
-        }
 
         function removeItem(index) {
             if (confirm("Remove this notification?")) {
@@ -213,10 +207,10 @@ void initWebServer() {
             }
         }
 
-        let editIndex = -1;
+        let editId = -1;
 
         function openAddModal() {
-            editIndex = -1;
+            editId = -1;
 
             document.getElementById("modalTitle").textContent = "Add Notification";
             document.getElementById("weekday").value = "Monday";
@@ -226,8 +220,8 @@ void initWebServer() {
             document.getElementById("editModal").style.display = "flex";
         }
 
-        function openEditModal(index, existingValue) {
-            editIndex = index;
+        function openEditModal(id, existingValue) {
+            editId = id;
 
             document.getElementById("modalTitle").textContent = "Edit Notification";
 
@@ -257,7 +251,7 @@ void initWebServer() {
             const time = document.getElementById("timeInput").value;
 
             const value = weekday + " " + time;
-            window.location = "/edit?i=" + editIndex + "&value=" + encodeURIComponent(value);
+            window.location = "/edit?i=" + editId + "&value=" + encodeURIComponent(value);
         }
 
       </script>
