@@ -117,10 +117,70 @@ void initWebServer() {
           .add-box:hover {
               background: #c8e0ff;
           }
-      </style>
-      </head><body>
+          .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .modal h2 {
+            margin-top: 0;
+        }
+        input[type="time"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            border: 1px solid #aaa;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .modal-buttons button {
+            margin-left: 10px;
+        }
+      </style></head>
+      <div id="editModal" class="modal">
+        <div class="modal-content">
+          <h2 id="modalTitle">Add Notification</h2>
+
+          <label>Weekday:</label>
+          <select id="weekday">
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+          </select>
+
+          <label>Time:</label>
+          <input type="time" id="timeInput" required>
+
+          <div class="modal-buttons">
+            <button onclick="closeModal()">Cancel</button>
+            <button id="modalSaveBtn">Save</button>
+          </div>
+        </div>
+      </div>
+      <body>
       <h1>Scheduled Notifications</h1>
-      <div class='add-box' onclick='addItem()'>+ Add New Notification</div>
+      <div class='add-box' onclick='openAddModal()'>+ Add New Notification</div>
       <div id="list">
       )rawliteral";
 
@@ -132,7 +192,7 @@ void initWebServer() {
         html +=      String(notifications[i].toString().c_str());
         html +=   "</div>";
         html +=   "<div>";
-        html +=     "<button class='edit-btn' onclick='editItem(" + String(notifications[i].id) + ")'>Edit</button>";
+        html +=     "<button class='edit-btn' onclick='openEditModal(" + String(notifications[i].id) + ", `" + notifications[i].toString().c_str() + "`)'>Edit</button>";
         html +=     "<button class='remove-btn' onclick='removeItem(" + String(notifications[i].id) + ")'>Remove</button>";
         html += "</div></div>";
     }
@@ -153,12 +213,53 @@ void initWebServer() {
             }
         }
 
-        function addItem() {
-            const newValue = prompt("Enter new time (e.g. Monday 14:00):");
-            if (newValue) {
-                window.location = "/add?value=" + encodeURIComponent(newValue);
-            }
+        let editIndex = -1;
+
+        function openAddModal() {
+            editIndex = -1;
+
+            document.getElementById("modalTitle").textContent = "Add Notification";
+            document.getElementById("weekday").value = "Monday";
+            document.getElementById("timeInput").value = "12:00";
+
+            document.getElementById("modalSaveBtn").onclick = saveAdd;
+            document.getElementById("editModal").style.display = "flex";
         }
+
+        function openEditModal(index, existingValue) {
+            editIndex = index;
+
+            document.getElementById("modalTitle").textContent = "Edit Notification";
+
+            // existingValue format: "Monday 13:50"
+            const parts = existingValue.split(" ");
+            document.getElementById("weekday").value = parts[0];
+            document.getElementById("timeInput").value = parts[1];
+
+            document.getElementById("modalSaveBtn").onclick = saveEdit;
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        function saveAdd() {
+            const weekday = document.getElementById("weekday").value;
+            const time = document.getElementById("timeInput").value;
+
+            const value = weekday + " " + time;
+            window.location = "/add?value=" + encodeURIComponent(value);
+        }
+
+        function saveEdit() {
+            const weekday = document.getElementById("weekday").value;
+            const time = document.getElementById("timeInput").value;
+
+            const value = weekday + " " + time;
+            window.location = "/edit?i=" + editIndex + "&value=" + encodeURIComponent(value);
+        }
+
       </script>
       </body></html>
       )rawliteral";
