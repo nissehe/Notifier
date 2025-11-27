@@ -4,6 +4,8 @@
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 
+int calendarRevision;
+
 static std::vector<NotificationItem> g_notifications;
 const char* const path = "/notifications.json";
 
@@ -91,6 +93,8 @@ void saveNotifications()
     }
 
     file.close();
+
+    calendarRevision++;
 }
 
 int addNotification(NotificationItem item)

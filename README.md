@@ -12,5 +12,4 @@ const char* WIFI_PASSWORD = "";
 const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
-- control the bell (relay?)
-- update schedular when calendar changes 
+- control the bell (transistor)

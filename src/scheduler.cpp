@@ -3,6 +3,8 @@
 #include "notificationStore.h"
 #include "timeServer.h"
 
+int usedCalendarRevision = -1;
+
 NotificationItem* getNextNotification()
 {
     const auto& notifications = getAllNotifications();
@@ -32,6 +34,8 @@ void waitForNextNotification()
         return;
     }
 
+    usedCalendarRevision = calendarRevision;
+
     int currentMinutes = getCurrentTimeOfDayMinutes();
     int targetMinutes = static_cast<int>(next->timeOfDayMinutes.count());
     int daysUntil = (static_cast<int>(next->dayOfWeek) - static_cast<int>(getCurrentDayOfWeek()) + 7) % 7;
@@ -47,5 +51,11 @@ void waitForNextNotification()
     while (totalWaitMinutes > 0) {
         delay(60000); // Wait for one minute
         --totalWaitMinutes;
+
+        if(usedCalendarRevision != calendarRevision) {
+            Serial.println("Calendar changed, recalculating next notification.");
+            waitForNextNotification();
+            return;
+        }
     }
 }

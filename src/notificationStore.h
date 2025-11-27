@@ -4,6 +4,8 @@
 #include <vector>
 #include "NotificationItem.h"
 
+extern int calendarRevision;
+
 void loadNotifications();
 int addNotification(NotificationItem item);
 void updateNotification(NotificationItem item);
