@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Arduino.h>
 #include <cstdint>
 
 enum class DayOfWeek : uint8_t {
@@ -11,6 +12,9 @@ enum class DayOfWeek : uint8_t {
     Saturday,
     Sunday
 };
+
+DayOfWeek getDayOfWeekFromString(const String& dayStr);
+String getStringFromDayOfWeek(DayOfWeek day);
 
 void syncRtc();
 DayOfWeek getCurrentDayOfWeek();

@@ -46,51 +46,80 @@ bool isDst()
     return isDst;
   }
 
-void syncRtc()
-{
-    // Implement RTC synchronization if needed
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi not connected, skipping RTC sync");
-    return;
+  DayOfWeek getDayOfWeekFromString(const String &dayStr)
+  {
+      if (dayStr == "Monday")    return DayOfWeek::Monday;
+      if (dayStr == "Tuesday")   return DayOfWeek::Tuesday; 
+      if (dayStr == "Wednesday") return DayOfWeek::Wednesday;
+      if (dayStr == "Thursday")  return DayOfWeek::Thursday;    
+      if (dayStr == "Friday")    return DayOfWeek::Friday;    
+      if (dayStr == "Saturday")  return DayOfWeek::Saturday;    
+      if (dayStr == "Sunday")    return DayOfWeek::Sunday;
+      return DayOfWeek::Monday; // Default
   }
 
-  // Configure NTP - adjust gmtOffset_sec and daylightOffset_sec to your timezone
-  const char* ntpServer = "pool.ntp.org";
-  const long gmtOffset_sec = 3600; // e.g. 3600 for CET (UTC+1)
-  const int daylightOffset_sec = isDst() ? 3600 : 0;
-
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-
-  Serial.print("Syncing time with NTP");
-  time_t now = time(nullptr);
-  int attempts = 0;
-  const int maxAttempts = 30; // ~15 seconds (30 * 500ms)
-  while (now < 24 * 3600 && attempts++ < maxAttempts) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(600);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(600);
-    now = time(nullptr);
-  }
-  Serial.println();
-
-  if (now < 24 * 3600) {
-    Serial.println("Failed to synchronize time");
-    return;
+  String getStringFromDayOfWeek(DayOfWeek day)
+  {
+      switch (day) {
+          case DayOfWeek::Monday:    return "Monday";
+          case DayOfWeek::Tuesday:   return "Tuesday";
+          case DayOfWeek::Wednesday: return "Wednesday";
+          case DayOfWeek::Thursday:  return "Thursday";
+          case DayOfWeek::Friday:    return "Friday";
+          case DayOfWeek::Saturday:  return "Saturday";
+          case DayOfWeek::Sunday:    return "Sunday";
+          default:                   return "Monday";
+      }
   }
 
-  struct tm timeinfo;
-  gmtime_r(&now, &timeinfo);
-  char buf[64];
-  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
-  Serial.print("Time synchronized UTC:   ");
-  Serial.println(buf);
+  void syncRtc()
+  {
+      // Implement RTC synchronization if needed
+      if (WiFi.status() != WL_CONNECTED)
+      {
+          Serial.println("WiFi not connected, skipping RTC sync");
+          return;
+      }
 
-  localtime_r(&now, &timeinfo);
-  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
-  Serial.print("Time synchronized Local: ");
-  Serial.println(buf);
-}
+      // Configure NTP - adjust gmtOffset_sec and daylightOffset_sec to your timezone
+      const char *ntpServer = "pool.ntp.org";
+      const long gmtOffset_sec = 3600; // e.g. 3600 for CET (UTC+1)
+      const int daylightOffset_sec = isDst() ? 3600 : 0;
+
+      configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+      Serial.print("Syncing time with NTP");
+      time_t now = time(nullptr);
+      int attempts = 0;
+      const int maxAttempts = 30; // ~15 seconds (30 * 500ms)
+      while (now < 24 * 3600 && attempts++ < maxAttempts)
+      {
+          digitalWrite(LED_BUILTIN, HIGH);
+          delay(600);
+          digitalWrite(LED_BUILTIN, LOW);
+          delay(600);
+          now = time(nullptr);
+      }
+      Serial.println();
+
+      if (now < 24 * 3600)
+      {
+          Serial.println("Failed to synchronize time");
+          return;
+      }
+
+      struct tm timeinfo;
+      gmtime_r(&now, &timeinfo);
+      char buf[64];
+      strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
+      Serial.print("Time synchronized UTC:   ");
+      Serial.println(buf);
+
+      localtime_r(&now, &timeinfo);
+      strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
+      Serial.print("Time synchronized Local: ");
+      Serial.println(buf);
+  }
 
 DayOfWeek getCurrentDayOfWeek()
 {

@@ -7,32 +7,42 @@ AsyncWebServer server(80);
 void initWebServer() {
 
   server.on("/add", HTTP_GET, [](AsyncWebServerRequest *request){
-    if (request->hasParam("value")) {
-        String v = request->getParam("value")->value();
-        NotificationItem newItem(v.c_str());
-        addNotification(newItem);
-    }
-    else
-    {
-      Serial.println("Edit request missing parameter");
-      Serial.println(request->url());
-    }
+      if (request->hasParam("weekday") &&
+          request->hasParam("hour") &&
+          request->hasParam("minute"))
+      {
+        String weekday = request->getParam("weekday")->value();
+        int hour       = request->getParam("hour")->value().toInt();
+        int minute     = request->getParam("minute")->value().toInt();
 
-    request->redirect("/");
+        NotificationItem item(weekday, hour, minute);
+
+        addNotification(item);
+      }
+      else
+      {
+        Serial.println("Add request missing parameter(s)");
+        Serial.println(request->url());
+      }
+
+      request->redirect("/");
   });
 
   server.on("/edit", HTTP_GET, [](AsyncWebServerRequest *request){
-    if (request->hasParam("i") && request->hasParam("value")) {
-        int id = request->getParam("i")->value().toInt();
-        String v = request->getParam("value")->value();
-        NotificationItem updateItem(v.c_str());
-        updateItem.id = id;
-        updateNotification(updateItem);
-    }
-    else
+    if (request->hasParam("i") &&
+        request->hasParam("weekday") &&
+        request->hasParam("hour") &&
+        request->hasParam("minute"))
     {
-      Serial.println("Edit request missing parameter(s)");
-      Serial.println(request->url());
+      int index     = request->getParam("i")->value().toInt();
+      String weekday = request->getParam("weekday")->value();
+      int hour       = request->getParam("hour")->value().toInt();
+      int minute     = request->getParam("minute")->value().toInt();
+
+      NotificationItem item(weekday, hour, minute);
+      item.id = index;
+      
+      updateNotification(item);
     }
 
     request->redirect("/");
@@ -242,16 +252,27 @@ void initWebServer() {
             const weekday = document.getElementById("weekday").value;
             const time = document.getElementById("timeInput").value;
 
-            const value = weekday + " " + time;
-            window.location = "/add?value=" + encodeURIComponent(value);
+            const parts = time.split(":");
+            const hour = parts[0];
+            const minute = parts[1];
+
+            window.location = "/add?weekday=" + encodeURIComponent(weekday) +
+                              "&hour=" + hour +
+                              "&minute=" + minute;
         }
 
         function saveEdit() {
             const weekday = document.getElementById("weekday").value;
             const time = document.getElementById("timeInput").value;
 
-            const value = weekday + " " + time;
-            window.location = "/edit?i=" + editId + "&value=" + encodeURIComponent(value);
+            const parts = time.split(":");
+            const hour = parts[0];
+            const minute = parts[1];
+
+            window.location = "/edit?i=" + editId +
+                              "&weekday=" + encodeURIComponent(weekday) +
+                              "&hour=" + hour +
+                              "&minute=" + minute;
         }
 
       </script>
