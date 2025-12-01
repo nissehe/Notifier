@@ -11,4 +11,9 @@ const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
 const char* TIMEZONEDB_API_KEY = "";
 
+## Notes
+IP is hard coded to 192.168.0.202
+
+Device must be restarted to apply DST/non-DST time
+
 ## TODO
