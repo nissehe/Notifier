@@ -43,6 +43,7 @@ void connectWiFi()
 
 void ringTheBell()
 {
+  Serial.println("Ring the bell!");
   digitalWrite(BELL_PIN, HIGH);
   delay(500);
   digitalWrite(BELL_PIN, LOW);

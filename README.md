@@ -12,4 +12,3 @@ const char* WIFI_PASSWORD = "";
 const char* TIMEZONEDB_API_KEY = "";
 
 ## TODO
-- control the bell (transistor)
